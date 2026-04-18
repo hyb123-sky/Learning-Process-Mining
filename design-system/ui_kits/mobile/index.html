@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PathForge — Mobile UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css"/>
+<style>
+  body { margin: 0; padding: 40px 20px; background: #F4F4F4; min-height: 100vh; }
+  .wrap { max-width: 1400px; margin: 0 auto; }
+  h1 { font-family: var(--font-serif); font-weight: 500; font-size: 40px; color: #000;
+       margin: 0 0 6px; letter-spacing: -0.02em; }
+  .sub { font-family: var(--font-sans); color: #666; margin: 0 0 32px; font-size: 13px; }
+  .stage { display: flex; flex-wrap: wrap; gap: 36px; align-items: flex-start; }
+  .slot { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .cap { font-family: var(--font-sans); font-size: 10px; font-weight: 700; letter-spacing: 0.22em;
+         text-transform: uppercase; color: #000; }
+  .controls { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .tab { font-family: var(--font-sans); font-size: 12px; font-weight: 600; padding: 8px 14px;
+         background: #fff; border: 1px solid #D0D0D0; cursor: pointer; color: #000;
+         letter-spacing: 0.08em; text-transform: uppercase; }
+  .tab.on { background: #000; color: #fff; border-color: #000; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="PFPrimitives.jsx"></script>
+<script type="text/babel" src="ScreenOnboarding.jsx"></script>
+<script type="text/babel" src="ScreenHome.jsx"></script>
+<script type="text/babel" src="ScreenLesson.jsx"></script>
+<script type="text/babel" src="ScreenCrestUnlock.jsx"></script>
+<script type="text/babel" src="ScreenCertification.jsx"></script>
+<script type="text/babel" src="ScreenVigil.jsx"></script>
+
+<script type="text/babel">
+function App() {
+  const [lang, setLang] = React.useState('en');
+  const [flow, setFlow] = React.useState('overview'); // overview | clickthru
+  const [screen, setScreen] = React.useState('onboarding');
+  const [tab, setTab] = React.useState('path');
+
+  // Click-thru flow renderer
+  const renderClickthru = () => {
+    let content = null;
+    if (screen === 'onboarding')
+      content = <ScreenOnboarding onComplete={() => setScreen('home')}/>;
+    else if (screen === 'home')
+      content = <ScreenHome lang={lang}
+        onOpenChapter={() => setScreen('lesson')}
+        onOpenCrest={() => setScreen('vigil')}/>;
+    else if (screen === 'lesson')
+      content = <ScreenLesson lang={lang}
+        onBack={() => setScreen('home')}
+        onComplete={() => setScreen('crest')}/>;
+    else if (screen === 'crest')
+      content = <ScreenCrestUnlock crest="shield" onContinue={() => setScreen('cert')}/>;
+    else if (screen === 'cert')
+      content = <ScreenCertification onBack={() => setScreen('home')}/>;
+    else if (screen === 'vigil')
+      content = <ScreenVigil onBack={() => setScreen('home')} onStart={() => setScreen('lesson')}/>;
+
+    const showTabs = ['home','cert'].includes(screen);
+    return (
+      <IOSDevice>
+        <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: 1, overflow: 'hidden' }}>{content}</div>
+          {showTabs && <PFTabBar active={tab} onChange={(t) => {
+            setTab(t);
+            if (t === 'trials') setScreen('cert');
+            if (t === 'path') setScreen('home');
+          }}/>}
+        </div>
+      </IOSDevice>
+    );
+  };
+
+  // Overview: all key screens tiled
+  const renderOverview = () => (
+    <div className="stage">
+      {[
+        { k:'onboarding', cap:'01 · Onboarding', el:<ScreenOnboarding onComplete={()=>{}}/> },
+        { k:'home',       cap:'02 · Home / Path', el:<><ScreenHome lang={lang} onOpenChapter={()=>{}} onOpenCrest={()=>{}}/></> },
+        { k:'lesson',     cap:'03 · Lesson & Trial', el:<ScreenLesson lang={lang} onBack={()=>{}} onComplete={()=>{}}/> },
+        { k:'crest',      cap:'04 · Crest unlock',   el:<ScreenCrestUnlock crest="shield" onContinue={()=>{}}/> },
+        { k:'cert',       cap:'05 · Certification',  el:<ScreenCertification onBack={()=>{}}/> },
+        { k:'vigil',      cap:'06 · Daily vigil',    el:<ScreenVigil onBack={()=>{}} onStart={()=>{}}/> },
+      ].map(s => (
+        <div className="slot" key={s.k}>
+          <IOSDevice>
+            <div style={{ height: '100%', display:'flex', flexDirection:'column' }}>
+              <div style={{ flex: 1, overflow:'hidden' }}>{s.el}</div>
+              {(s.k==='home'||s.k==='cert') && <PFTabBar active={s.k==='cert'?'trials':'path'} onChange={()=>{}}/>}
+            </div>
+          </IOSDevice>
+          <div className="cap">{s.cap}</div>
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="wrap">
+      <h1>PathForge — Mobile UI Kit</h1>
+      <p className="sub">6 screens · EN / ZH / JP · iOS frame for scale. Click "Prototype" to step through the flow.</p>
+      <div className="controls">
+        <button className={'tab '+(flow==='overview'?'on':'')} onClick={()=>setFlow('overview')}>All screens</button>
+        <button className={'tab '+(flow==='clickthru'?'on':'')} onClick={()=>{setFlow('clickthru'); setScreen('onboarding');}}>Prototype</button>
+        <span style={{ flex: 1 }}/>
+        {['en','zh','ja'].map(l => (
+          <button key={l} className={'tab '+(lang===l?'on':'')} onClick={()=>setLang(l)}>
+            {l==='en'?'English':l==='zh'?'中文':'日本語'}
+          </button>
+        ))}
+      </div>
+      {flow === 'overview' ? renderOverview() : renderClickthru()}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

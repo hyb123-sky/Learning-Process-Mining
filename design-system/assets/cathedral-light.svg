@@ -1,0 +1,25 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1E2E4F"></stop>
+      <stop offset="1" stop-color="#0F1A33"></stop>
+    </linearGradient>
+    <linearGradient id="ray" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F5E6B8" stop-opacity="0.35"></stop>
+      <stop offset="1" stop-color="#F5E6B8" stop-opacity="0"></stop>
+    </linearGradient>
+    <radialGradient id="bloom" cx="0.82" cy="0.12" r="0.6">
+      <stop offset="0" stop-color="#F5E6B8" stop-opacity="0.55"></stop>
+      <stop offset="1" stop-color="#F5E6B8" stop-opacity="0"></stop>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#sky)"></rect>
+  
+  <g opacity="0.7">
+    <polygon points="800,0 800,120 100,600 0,600" fill="url(#ray)"></polygon>
+    <polygon points="800,0 800,60 300,600 180,600" fill="url(#ray)" opacity="0.6"></polygon>
+    <polygon points="800,0 700,0 400,600 320,600" fill="url(#ray)" opacity="0.5"></polygon>
+  </g>
+  <rect width="800" height="600" fill="url(#bloom)"></rect>
+</svg>
