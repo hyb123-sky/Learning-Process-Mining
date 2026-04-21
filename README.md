@@ -22,15 +22,39 @@ hi-fidelity screens so the product team has a single source of truth.
 | `design-system/assets/` | Logo, mark, parchment + cathedral-light textures. |
 | `design-system/assets/crests/` | Shield, Flame, Chalice crest SVGs. |
 | `design-system/preview/` | One HTML card per token group — palette, type, spacing, radii, shadows, components, brand marks. |
-| `design-system/ui_kits/mobile/` | React/Babel click-through prototype: onboarding, home, lesson + trial, crest unlock, certification, daily vigil. EN / ZH / JP. |
-| `index.html` | Top-level index that links every preview card and the mobile UI kit. |
+| `design-system/ui_kits/mobile/` | React/Babel click-through prototype: onboarding, home, lesson + trial, crest unlock, certification, daily vigil. EN / ZH / JP. *Needs a local server — see below.* |
+| `content/quests/use-and-interpret-views/` | Japanese exam-prep content for the Celonis **Use and Interpret Views** qualification. Chapters + 10-question trials each. |
+| `study.html` | **Self-contained study app — open this directly.** Reads chapters from `content/`, renders lessons, runs trials with instant feedback and per-question explanations. |
+| `index.html` | Landing page linking the Study app, the mobile UI kit, and every design preview. |
 
-## Quick start
+## Quick start — study the exam material
 
-Open `index.html` at the repo root in any modern browser — no build step, no
-install. Everything is vanilla HTML / CSS / React-via-CDN so the design is
-inspectable and portable into any production stack (React Native, Flutter,
-native iOS/Android, or web).
+**Double-click `study.html`** (or `index.html` → 「学習を始める」).
+No build step, no local server needed. It loads Chapter 1 & 2 of the
+"Use and Interpret Views" quest, lets you read the lessons in Japanese,
+then run the 10-question trial per chapter with instant grading and
+explanations.
+
+## Quick start — browse the design system
+
+Open `index.html` to reach every token card (palette, type, spacing,
+radii, shadows, components, brand marks).
+
+## Opening the mobile UI kit
+
+The React/Babel prototype at `design-system/ui_kits/mobile/index.html`
+uses `<script type="text/babel" src="...jsx">` to load screen files.
+Browsers block those XHR requests under the `file://` protocol (CORS),
+so **double-clicking it will render a blank page**. To view it:
+
+```bash
+cd Learning-Process-Mining
+python3 -m http.server 8000
+# then open http://localhost:8000/design-system/ui_kits/mobile/
+```
+
+The `study.html` app does **not** have this limitation — it only uses
+plain-JS `<script src>` tags, which work under `file://`.
 
 ## Re-implementing in a production codebase
 
