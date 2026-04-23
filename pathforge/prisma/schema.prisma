@@ -1,0 +1,117 @@
+// PathForge — Prisma schema
+// Spec: PATHFORGE_SPEC_v2.md Section 2 (locked)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ========== CONTENT HIERARCHY ==========
+
+model Trail {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  title_ja       String
+  title_en       String
+  description_ja String
+  description_en String
+  icon           String   @default("shield")
+  order          Int      @default(0)
+  quests         Quest[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Quest {
+  id               String    @id @default(cuid())
+  slug             String    @unique
+  title_ja         String
+  title_en         String
+  description_ja   String
+  description_en   String
+  trail            Trail     @relation(fields: [trailId], references: [id], onDelete: Cascade)
+  trailId          String
+  order            Int       @default(0)
+  estimatedMinutes Int       @default(120)
+  crestName        String    @default("Shield of Insight")
+  crestIcon        String    @default("shield")
+  chapters         Chapter[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([trailId])
+}
+
+model Chapter {
+  id               String            @id @default(cuid())
+  slug             String            @unique
+  title_ja         String
+  title_en         String
+  quest            Quest             @relation(fields: [questId], references: [id], onDelete: Cascade)
+  questId          String
+  order            Int               @default(0)
+  contentMdx       String            // MDX source stored in DB. Read at runtime, render via next-mdx-remote.
+  estimatedMinutes Int               @default(20)
+  insightReward    Int               @default(380)
+  questions        Question[]
+  progress         ChapterProgress[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([questId])
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId   String
+  order       Int      @default(0)
+  type        String   // "mcq" | "multi_select" | "true_false"
+  stem_ja     String
+  options     String   // JSON string: [{"key":"A","text_ja":"...","text_en":"..."}, ...]
+  correctKeys String   // JSON string: ["A"] or ["A","C"]
+  explain_ja  String
+  explain_en  String   @default("")
+  difficulty  String   @default("medium") // "easy" | "medium" | "hard"
+  tags        String   @default("[]")     // JSON string array
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([chapterId])
+}
+
+// ========== USER STATE (multi-user ready) ==========
+
+model ChapterProgress {
+  id          String    @id @default(cuid())
+  userId      String    // Phase 1: constant "user_local_1". Phase 3: NextAuth user.id
+  chapter     Chapter   @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId   String
+  status      String    @default("locked") // "locked" | "available" | "in_progress" | "completed"
+  bestScore   Int       @default(0)        // 0-100
+  attempts    Int       @default(0)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, chapterId])
+  @@index([userId])
+  @@index([chapterId])
+}
+
+model UserStats {
+  id              String   @id @default(cuid())
+  userId          String   @unique // Phase 1: "user_local_1"
+  totalInsight    Int      @default(0)
+  questsCompleted Int      @default(0)
+  currentStreak   Int      @default(0)
+  longestStreak   Int      @default(0)
+  lastStudyDate   String   @default("") // ISO date or ""
+  rank            String   @default("Apprentice")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
