@@ -13,10 +13,10 @@ View は Publisher (分析者) によって Studio 内で設計され、Consumer
 <CompareTable
   headers={['項目', 'View', 'Analysis (旧)', 'App']}
   rows={[
-    ['対象ユーザー', 'Business User (Consumer)', 'Analyst (Publisher)', 'Business User']},
-    ['編集可能性', '閲覧のみ', '編集可能', '閲覧のみ']},
-    ['配置場所', 'Studio, App, Shared Space', 'Studio (レガシー)', 'Navigator / Marketplace']},
-    ['構成要素', 'Tab → Sheet → Component', 'Sheet → Component', '複数の View + Action Flow']},
+    ['対象ユーザー', 'Business User (Consumer)', 'Analyst (Publisher)', 'Business User'],
+    ['編集可能性', '閲覧のみ', '編集可能', '閲覧のみ'],
+    ['配置場所', 'Studio, App, Shared Space', 'Studio (レガシー)', 'Navigator / Marketplace'],
+    ['構成要素', 'Tab → Sheet → Component', 'Sheet → Component', '複数の View + Action Flow'],
   ]}
 />
 
