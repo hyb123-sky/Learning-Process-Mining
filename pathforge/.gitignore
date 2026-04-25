@@ -42,4 +42,5 @@ next-env.d.ts
 /prisma/dev.db-journal
 
 # env
-.env
+# .env is committed for local SQLite dev (no secrets).
+# .env.local / .env.production.local etc are still ignored by Next.js defaults above.
