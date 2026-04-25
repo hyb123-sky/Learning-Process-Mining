@@ -5,10 +5,10 @@ Celonis View は四層の階層で構成されています。
 <CompareTable
   headers={['層', '役割']}
   rows={[
-    ['View', 'Tab の集合を束ねる最上位コンテナ']},
-    ['Tab', 'トピック別にシートをグループ化する水平タブ']},
-    ['Sheet', 'コンポーネントを配置する縦長キャンバス']},
-    ['Component', 'KPI Tile・Process Explorer などの可視化単位']},
+    ['View', 'Tab の集合を束ねる最上位コンテナ'],
+    ['Tab', 'トピック別にシートをグループ化する水平タブ'],
+    ['Sheet', 'コンポーネントを配置する縦長キャンバス'],
+    ['Component', 'KPI Tile・Process Explorer などの可視化単位'],
   ]}
 />
 
@@ -64,9 +64,9 @@ Consumer が View を開いたとき、右上には二つの情報が表示さ�
 <CompareTable
   headers={['項目', 'Last Refresh', 'Current Filter']}
   rows={[
-    ['意味', 'データモデルへのロード時刻']}, 'View に適用されている Selection']},
-    ['更新タイミング', 'データ抽出ジョブ完了時'], 'Consumer が Selection を変更するたび']},
-    ['KPI 異常時の確認', '最初に見る']}, 'その後で確認する']}],
+    ['意味', 'データモデルへのロード時刻', 'View に適用されている Selection'],
+    ['更新タイミング', 'データ抽出ジョブ完了時', 'Consumer が Selection を変更するたび'],
+    ['KPI 異常時の確認', '最初に見る', 'その後で確認する'],
   ]}
 />
 
