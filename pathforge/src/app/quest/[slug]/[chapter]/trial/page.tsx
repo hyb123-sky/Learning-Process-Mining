@@ -29,7 +29,6 @@ export default async function TrialPage({
       chapterId={chapter.id}
       chapterTitle={chapter.title_ja}
       questSlug={chapter.quest.slug}
-      chapterSlug={chapter.slug}
       questions={questions}
     />
   );

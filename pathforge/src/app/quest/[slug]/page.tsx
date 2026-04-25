@@ -63,11 +63,9 @@ export default async function QuestDetail({ params }: { params: { slug: string }
           const prog = progMap.get(c.id);
           const locked = st === "locked";
           const href = `/quest/${quest.slug}/${c.slug}`;
-          const Wrapper: any = locked ? "div" : Link;
-          const props: any = locked ? {} : { href };
-          return (
-            <Wrapper key={c.id} {...props}>
-              <Card className={`flex items-center gap-4 pf-card-hover ${locked ? "opacity-50" : ""}`}>
+          const cardClass = `flex items-center gap-4 pf-card-hover ${locked ? "opacity-50" : ""}`;
+          const inner = (
+            <Card className={cardClass}>
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center border border-pf-navy/80 font-mono text-sm font-bold text-pf-navy">
                   {st === "completed" ? <Check className="h-4 w-4" /> :
                    locked ? <Lock className="h-4 w-4" /> :
@@ -87,8 +85,12 @@ export default async function QuestDetail({ params }: { params: { slug: string }
                   )}
                   {locked && <Badge variant="muted">ロック中</Badge>}
                 </div>
-              </Card>
-            </Wrapper>
+            </Card>
+          );
+          return locked ? (
+            <div key={c.id}>{inner}</div>
+          ) : (
+            <Link key={c.id} href={href}>{inner}</Link>
           );
         })}
       </div>

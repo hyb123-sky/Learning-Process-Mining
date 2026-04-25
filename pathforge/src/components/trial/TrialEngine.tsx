@@ -31,13 +31,11 @@ export function TrialEngine({
   chapterId,
   chapterTitle,
   questSlug,
-  chapterSlug,
   questions,
 }: {
   chapterId: string;
   chapterTitle: string;
   questSlug: string;
-  chapterSlug: string;
   questions: Question[];
 }) {
   const router = useRouter();
@@ -198,8 +196,6 @@ export function TrialEngine({
       </div>
     );
   }
-
-  const isCorrectKey = (_key: string) => false; // placeholder (client doesn't know correct before submit)
 
   const progressPct = ((idx + (isLocked ? 1 : 0)) / questions.length) * 100;
   const diffLabel = { easy: "易", medium: "中", hard: "難" }[q.difficulty];
