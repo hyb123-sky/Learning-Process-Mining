@@ -4,113 +4,288 @@
 
 @layer base {
   :root {
-    /* === PathForge Paladin Palette === */
-    --pf-ivory:        42 30% 96%;
-    --pf-ivory-warm:   38 35% 92%;
-    --pf-parchment:    35 30% 87%;
+    /* === Slate Neutrals (H S L values for hsl()) === */
+    --slate-50:  210 40% 98%;
+    --slate-100: 210 40% 96%;
+    --slate-200: 214 32% 91%;
+    --slate-300: 213 27% 84%;
+    --slate-400: 215 20% 65%;
+    --slate-500: 215 16% 47%;
+    --slate-600: 215 19% 35%;
+    --slate-700: 215 25% 27%;
+    --slate-800: 217 33% 17%;
+    --slate-900: 222 47% 11%;
 
-    --pf-gold:         38 65% 52%;
-    --pf-gold-light:   40 55% 72%;
-    --pf-gold-muted:   38 30% 45%;
+    /* === Brand — Indigo (H S L) === */
+    --brand-50:  238 100% 97%;
+    --brand-100: 240 100% 95%;
+    --brand-300: 239 85% 81%;
+    --brand-500: 239 84% 67%;
+    --brand-600: 243 75% 59%;
+    --brand-700: 245 58% 51%;
+    --brand-900: 244 48% 34%;
 
-    --pf-navy:         222 47% 14%;
-    --pf-navy-mid:     220 35% 22%;
-    --pf-navy-light:   218 25% 32%;
+    /* === Semantic (H S L) === */
+    --success:    158 64% 40%;
+    --success-bg: 152 80% 96%;
+    --warn:       38 92% 50%;
+    --warn-bg:    48 100% 96%;
+    --danger:     0 72% 59%;
+    --danger-bg:  0 86% 97%;
+    --info:       217 91% 60%;
+    --info-bg:    214 100% 97%;
 
-    --pf-success:      145 55% 42%;
-    --pf-warning:      38 90% 55%;
-    --pf-error:        0 72% 55%;
-    --pf-info:         210 60% 50%;
+    /* === shadcn bridge === */
+    --background:           var(--slate-50);
+    --foreground:           var(--slate-900);
+    --card:                 0 0% 100%;
+    --card-foreground:      var(--slate-900);
+    --primary:              var(--brand-600);
+    --primary-foreground:   0 0% 100%;
+    --secondary:            var(--slate-100);
+    --secondary-foreground: var(--slate-700);
+    --accent:               var(--brand-100);
+    --accent-foreground:    var(--brand-700);
+    --muted:                var(--slate-100);
+    --muted-foreground:     var(--slate-500);
+    --border:               var(--slate-200);
+    --input:                var(--slate-200);
+    --ring:                 var(--brand-500);
+    --radius:               0.5rem;
 
-    --pf-text-primary:    222 30% 15%;
-    --pf-text-secondary:  220 15% 40%;
-    --pf-text-muted:      218 10% 55%;
-    --pf-text-on-dark:    42 30% 96%;
+    /* === Shadows (neutral slate tint) === */
+    --shadow-sm:   0 1px 2px hsl(222 47% 11% / 0.05);
+    --shadow-md:   0 4px 6px -1px hsl(222 47% 11% / 0.1), 0 2px 4px -2px hsl(222 47% 11% / 0.1);
+    --shadow-lg:   0 10px 15px -3px hsl(222 47% 11% / 0.1), 0 4px 6px -4px hsl(222 47% 11% / 0.1);
+    --shadow-card: 0 1px 3px hsl(222 47% 11% / 0.08), 0 0 0 1px hsl(var(--border) / 0.6);
 
-    /* shadcn bridge */
-    --background: var(--pf-ivory);
-    --foreground: var(--pf-text-primary);
-    --card:       0 0% 100%;
-    --card-foreground: var(--pf-text-primary);
-    --primary:    var(--pf-navy);
-    --primary-foreground: var(--pf-ivory);
-    --secondary:  var(--pf-parchment);
-    --secondary-foreground: var(--pf-navy);
-    --accent:     var(--pf-gold);
-    --accent-foreground: var(--pf-navy);
-    --muted:      35 20% 90%;
-    --muted-foreground: var(--pf-text-muted);
-    --border:     35 20% 85%;
-    --input:      35 20% 85%;
-    --ring:       var(--pf-gold);
-    --radius:     0.625rem;
+    /* === Typography stacks === */
+    --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: var(--font-jetbrains), ui-monospace, "Menlo", monospace;
 
-    --shadow-sm: 0 1px 2px hsl(35 30% 50% / 0.08);
-    --shadow-md: 0 4px 12px hsl(35 30% 50% / 0.10);
-    --shadow-lg: 0 8px 24px hsl(35 30% 50% / 0.12);
-    --shadow-card: 0 2px 8px hsl(35 30% 50% / 0.06), 0 0 0 1px hsl(35 20% 85% / 0.5);
+    /* === Spacing (4px grid) === */
+    --sp-1:  4px;  --sp-2:  8px;  --sp-3: 12px;
+    --sp-4: 16px;  --sp-5: 20px;  --sp-6: 24px;
+    --sp-8: 32px; --sp-10: 40px; --sp-12: 48px;
+    --sp-16: 64px;
+
+    /* === Radii (enterprise 6–8px) === */
+    --radius-sm:   4px;
+    --radius-md:   6px;
+    --radius-lg:   8px;
+    --radius-xl:   12px;
+    --radius-pill: 9999px;
+
+    /* === Animation === */
+    --ease-out:    cubic-bezier(0, 0, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --dur-fast:    100ms;
+    --dur-med:     200ms;
+    --dur-slow:    300ms;
+
+    /* === Legacy pf.* aliases — remapped to slate/brand for backward compat === */
+    --pf-ivory:          var(--slate-50);
+    --pf-ivory-warm:     var(--slate-100);
+    --pf-parchment:      var(--slate-200);
+    --pf-gold:           var(--brand-500);
+    --pf-gold-light:     var(--brand-300);
+    --pf-gold-muted:     var(--brand-600);
+    --pf-navy:           var(--slate-900);
+    --pf-navy-mid:       var(--slate-800);
+    --pf-navy-light:     var(--slate-700);
+    --pf-success:        var(--success);
+    --pf-warning:        var(--warn);
+    --pf-error:          var(--danger);
+    --pf-info:           var(--info);
+    --pf-text-primary:   var(--slate-900);
+    --pf-text-secondary: var(--slate-600);
+    --pf-text-muted:     var(--slate-400);
+    --pf-text-on-dark:   0 0% 100%;
   }
 }
 
 @layer base {
   * { border-color: hsl(var(--border)); }
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   body {
-    background-color: hsl(var(--pf-ivory));
-    color: hsl(var(--pf-text-primary));
-    font-family: var(--font-manrope), system-ui, sans-serif;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
   }
-  h1, h2, h3, .font-display {
-    font-family: var(--font-cormorant), 'Noto Serif JP', serif;
-    font-weight: 500;
-    letter-spacing: -0.01em;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.011em;
+    color: hsl(var(--slate-900));
   }
 }
 
 @layer components {
+  /* Cards */
   .pf-card {
     background: hsl(var(--card));
     border: 1px solid hsl(var(--border));
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-card);
   }
   .pf-card-hover {
-    transition: transform 200ms ease, box-shadow 200ms ease;
+    transition: transform var(--dur-med) var(--ease-out), box-shadow var(--dur-med) var(--ease-out);
   }
   .pf-card-hover:hover {
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
   }
+
+  /* Badges */
   .pf-badge-gold {
     display: inline-flex;
     align-items: center;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
     font-weight: 500;
-    background: linear-gradient(135deg, hsl(var(--pf-gold-light)), hsl(var(--pf-gold)));
-    color: hsl(var(--pf-navy));
-  }
-  .pf-texture-parchment {
-    background-image: url('/textures/parchment-light.png'), linear-gradient(hsl(var(--pf-ivory)), hsl(var(--pf-ivory)));
-    background-size: 400px, auto;
-    background-blend-mode: soft-light;
+    background: hsl(var(--brand-100));
+    color: hsl(var(--brand-700));
+    border: 1px solid hsl(var(--brand-300));
   }
 
-  /* Prose-like typographic rhythm for MDX-rendered chapters */
-  .prose-pf { color: hsl(var(--pf-text-primary)); line-height: 1.75; }
-  .prose-pf p { margin: 0 0 1rem; font-size: 1rem; }
-  .prose-pf h2 { font-family: var(--font-cormorant), serif; font-size: 1.75rem; margin: 2rem 0 0.75rem; font-weight: 500; letter-spacing: -0.015em; }
-  .prose-pf h3 { font-family: var(--font-cormorant), serif; font-size: 1.3rem; margin: 1.5rem 0 0.5rem; font-weight: 600; }
-  .prose-pf ul { list-style: none; padding: 0; margin: 0 0 1rem; }
-  .prose-pf ul li { position: relative; padding-left: 1.25rem; margin: 0.35rem 0; line-height: 1.75; }
-  .prose-pf ul li::before { content: "—"; position: absolute; left: 0; color: hsl(var(--pf-gold-muted)); }
-  .prose-pf a { color: hsl(var(--pf-gold-muted)); border-bottom: 1px solid hsl(var(--pf-gold) / 0.4); }
-  .prose-pf code { font-family: ui-monospace, Menlo, monospace; font-size: 0.92em; background: hsl(var(--pf-ivory-warm)); padding: 0.1rem 0.35rem; border-radius: 0.25rem; }
-  .prose-pf strong { color: hsl(var(--pf-navy)); font-weight: 700; }
-  .prose-pf blockquote { font-family: var(--font-cormorant), serif; font-style: italic; font-size: 1.15rem; border-left: 2px solid hsl(var(--pf-gold)); padding: 0.25rem 0 0.25rem 1rem; color: hsl(var(--pf-text-secondary)); margin: 1rem 0; }
+  /* MDX prose (chapters) */
+  .prose-pf {
+    color: hsl(var(--slate-700));
+    line-height: 1.625;
+    font-family: var(--font-sans);
+  }
+  .prose-pf p { margin: 0 0 0.875rem; font-size: 15px; }
+  .prose-pf h2 {
+    font-family: var(--font-sans);
+    font-size: 1.375rem;
+    font-weight: 700;
+    letter-spacing: -0.011em;
+    margin: 2rem 0 0.625rem;
+    color: hsl(var(--slate-900));
+  }
+  .prose-pf h3 {
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.5rem;
+    color: hsl(var(--slate-800));
+  }
+  .prose-pf ul { list-style: none; padding: 0; margin: 0 0 0.875rem; }
+  .prose-pf ul li { position: relative; padding-left: 1.25rem; margin: 0.3rem 0; }
+  .prose-pf ul li::before { content: "–"; position: absolute; left: 0; color: hsl(var(--brand-500)); }
+  .prose-pf a { color: hsl(var(--brand-600)); border-bottom: 1px solid hsl(var(--brand-300) / 0.6); text-decoration: none; }
+  .prose-pf a:hover { color: hsl(var(--brand-700)); border-color: hsl(var(--brand-600)); }
+  .prose-pf code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    color: hsl(var(--brand-700));
+    background: hsl(var(--slate-100));
+    padding: 2px 5px;
+    border-radius: var(--radius-sm);
+  }
+  .prose-pf strong { color: hsl(var(--slate-900)); font-weight: 700; }
+  .prose-pf blockquote {
+    font-style: italic;
+    font-size: 1rem;
+    border-left: 3px solid hsl(var(--brand-300));
+    padding: 0.375rem 0 0.375rem 1rem;
+    color: hsl(var(--slate-600));
+    margin: 1rem 0;
+  }
+
+  /* Semantic type classes */
+  .t-eyebrow {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: hsl(var(--slate-500));
+  }
+  .t-display {
+    font-family: var(--font-sans);
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.022em;
+    color: hsl(var(--slate-900));
+  }
+  .t-h1 {
+    font-family: var(--font-sans);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.011em;
+    color: hsl(var(--slate-900));
+  }
+  .t-h2 {
+    font-family: var(--font-sans);
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: hsl(var(--slate-900));
+  }
+  .t-h3 {
+    font-family: var(--font-sans);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: hsl(var(--slate-900));
+  }
+  .t-h4 {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: hsl(var(--slate-900));
+  }
+  .t-body {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: hsl(var(--slate-800));
+  }
+  .t-body-lg {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: hsl(var(--slate-800));
+  }
+  .t-body-sm {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: hsl(var(--slate-600));
+  }
+  .t-meta {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    color: hsl(var(--slate-500));
+  }
+  .t-code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    color: hsl(var(--brand-700));
+    background: hsl(var(--slate-100));
+    padding: 2px 4px;
+    border-radius: var(--radius-sm);
+  }
 }
 
 @layer components {
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in { animation: fade-in var(--dur-med) var(--ease-out) forwards; }
+
   @keyframes crest-reveal {
     0%   { opacity: 0; transform: scale(0.3) rotate(-15deg); }
     50%  { opacity: 1; transform: scale(1.15) rotate(3deg); }
@@ -118,14 +293,21 @@
   }
   .animate-crest-reveal { animation: crest-reveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 
-  @keyframes gold-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 hsl(38 65% 52% / 0.3); }
-    50%      { box-shadow: 0 0 20px 8px hsl(38 65% 52% / 0.15); }
+  @keyframes brand-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 hsl(var(--brand-500) / 0.3); }
+    50%      { box-shadow: 0 0 16px 6px hsl(var(--brand-500) / 0.12); }
   }
-  .animate-gold-pulse { animation: gold-pulse 2s ease-in-out infinite; }
+  .animate-gold-pulse  { animation: brand-pulse 2s ease-in-out infinite; }
+  .animate-brand-pulse { animation: brand-pulse 2s ease-in-out infinite; }
 }
 
 @layer utilities {
   .text-balance { text-wrap: balance; }
-  .eyebrow { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: hsl(var(--pf-gold-muted)); }
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: hsl(var(--slate-500));
+  }
 }

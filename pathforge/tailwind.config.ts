@@ -56,9 +56,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["var(--font-cormorant)", "Noto Serif JP", "serif"],
-        body: ["var(--font-manrope)", "system-ui", "sans-serif"],
-        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+        display: ["var(--font-inter)", "system-ui", "sans-serif"],
+        body:    ["var(--font-inter)", "system-ui", "sans-serif"],
+        mono:    ["var(--font-jetbrains)", "ui-monospace", "Menlo", "monospace"],
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -72,13 +72,18 @@ const config: Config = {
           "100%": { opacity: "1", transform: "scale(1) rotate(0deg)" },
         },
         "gold-pulse": {
-          "0%, 100%": { boxShadow: "0 0 0 0 hsl(38 65% 52% / 0.3)" },
-          "50%":      { boxShadow: "0 0 20px 8px hsl(38 65% 52% / 0.15)" },
+          "0%, 100%": { boxShadow: "0 0 0 0 hsl(239 84% 67% / 0.3)" },
+          "50%":      { boxShadow: "0 0 16px 6px hsl(239 84% 67% / 0.12)" },
+        },
+        "fade-in": {
+          from: { opacity: "0", transform: "translateY(4px)" },
+          to:   { opacity: "1", transform: "translateY(0)" },
         },
       },
       animation: {
         "crest-reveal": "crest-reveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
-        "gold-pulse": "gold-pulse 2s ease-in-out infinite",
+        "gold-pulse":   "gold-pulse 2s ease-in-out infinite",
+        "fade-in":      "fade-in 200ms cubic-bezier(0, 0, 0.2, 1) forwards",
       },
     },
   },
