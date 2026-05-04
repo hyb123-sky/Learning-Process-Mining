@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
+import { getContinueLearningHref } from "@/lib/queries/continue-learning";
+import { TopbarSearch } from "@/components/layout/TopbarSearch";
+import { NotificationBell } from "@/components/layout/NotificationBell";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -48,7 +51,9 @@ function NavItem({
   );
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const continueLearningHref = await getContinueLearningHref();
+
   return (
     <html lang="en" className={`h-full ${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="h-full overflow-hidden flex antialiased" style={{ color: "#0F172A" }}>
@@ -188,35 +193,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             <div className="text-base font-semibold text-slate-900 whitespace-nowrap">Home</div>
 
-            <div className="relative shrink-0 w-[480px]">
-              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 flex pointer-events-none">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="7" cy="7" r="5" /><line x1="11" y1="11" x2="14.5" y2="14.5" />
-                </svg>
-              </span>
-              <input
-                type="text"
-                placeholder="Search modules, papers, or terms..."
-                className="w-full h-9 bg-slate-100 border border-transparent rounded-[6px] text-sm text-slate-900 pl-9 pr-3 outline-none focus:border-slate-300 focus:bg-white placeholder:text-slate-400 transition-colors"
-              />
-            </div>
+            <TopbarSearch />
 
             <div className="ml-auto flex items-center gap-3">
-              <button
-                className="w-9 h-9 rounded-[6px] flex items-center justify-center text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
-                aria-label="Notifications"
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M10 2a6 6 0 0 1 6 6c0 3.5 1.5 5 1.5 5h-15S4 11.5 4 8a6 6 0 0 1 6-6z" />
-                  <path d="M8.5 17a1.5 1.5 0 0 0 3 0" />
-                </svg>
-              </button>
-              <button
-                className="inline-flex items-center gap-1.5 text-white text-[13px] font-medium px-3.5 py-2 rounded-[6px] cursor-pointer whitespace-nowrap transition-opacity hover:opacity-90"
+              <NotificationBell />
+              <Link
+                href={continueLearningHref}
+                className="inline-flex items-center gap-1.5 text-white text-[13px] font-medium px-3.5 py-2 rounded-[6px] whitespace-nowrap transition-opacity hover:opacity-90"
                 style={{ background: "#1E3A5F" }}
               >
                 Continue learning
-              </button>
+              </Link>
             </div>
           </div>
 

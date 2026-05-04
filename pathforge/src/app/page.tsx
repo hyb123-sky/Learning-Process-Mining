@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { CURRENT_USER_ID } from "@/lib/constants";
 import { ensureUserStats } from "@/actions/progress";
+import { getContinueLearningHref } from "@/lib/queries/continue-learning";
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +40,6 @@ function ProgBar({ pct }: { pct: number }) {
   );
 }
 
-// Generic thumb icon used across card types
 function ThumbIcon({ stroke }: { stroke: string }) {
   return (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke={stroke} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -77,7 +77,7 @@ function ModuleCard({
   return (
     <Link
       href={href}
-      className="bg-white rounded-lg overflow-hidden cursor-pointer border border-slate-200 hover:shadow-sm hover:border-slate-300 transition-all block"
+      className="bg-white rounded-lg overflow-hidden cursor-pointer border border-slate-200 hover:shadow-md hover:border-slate-300 transition-all block"
     >
       {/* Thumbnail */}
       <div className="h-[100px] flex items-center justify-center" style={{ background: bg }}>
@@ -109,13 +109,14 @@ function ModuleCard({
 export default async function Dashboard() {
   await ensureUserStats();
 
-  const [stats, quests, progressRows] = await Promise.all([
+  const [stats, quests, progressRows, continueLearningHref] = await Promise.all([
     prisma.userStats.findUnique({ where: { userId: CURRENT_USER_ID } }),
     prisma.quest.findMany({
       orderBy: { order: "asc" },
       include: { chapters: { orderBy: { order: "asc" } } },
     }),
     prisma.chapterProgress.findMany({ where: { userId: CURRENT_USER_ID } }),
+    getContinueLearningHref(),
   ]);
 
   const progMap = new Map(progressRows.map((p) => [p.chapterId, p]));
@@ -140,6 +141,9 @@ export default async function Dashboard() {
   const points = stats?.totalInsight ?? 0;
   const rank = stats?.rank ?? "Apprentice";
 
+  const isChapterHref = continueLearningHref !== "/catalog";
+  const completePct = totalChapters > 0 ? Math.round((doneChapters / totalChapters) * 100) : 0;
+
   // KPI delta arrows
   function DeltaUp({ text }: { text: string }) {
     return (
@@ -151,6 +155,12 @@ export default async function Dashboard() {
       </div>
     );
   }
+
+  // Recent activity rows (in_progress + completed only)
+  const allChapters = quests.flatMap((q) => q.chapters.map((c) => ({ ...c, questSlug: q.slug })));
+  const activityRows = progressRows
+    .filter((p) => p.status === "completed" || p.status === "in_progress")
+    .slice(0, 5);
 
   return (
     <div className="p-8">
@@ -170,14 +180,14 @@ export default async function Dashboard() {
               : "Start your process mining journey today."}
           </div>
           <Link
-            href={continueCards.length > 0 ? `/quest/${continueCards[0].slug}` : "/catalog"}
+            href={continueLearningHref}
             className="inline-flex items-center gap-2 bg-white text-[14px] font-semibold px-[18px] py-2.5 rounded-[6px] hover:opacity-92 transition-opacity"
             style={{ color: "#1E3A5F" }}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1E3A5F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="8" cy="8" r="6.5" /><path d="M6.5 5.5l5 2.5-5 2.5V5.5z" fill="#1E3A5F" stroke="none" />
             </svg>
-            {continueCards.length > 0 ? `Resume: ${continueCards[0].title_en}` : "Browse catalog"}
+            {isChapterHref ? "Continue learning" : "Browse catalog"}
           </Link>
         </div>
 
@@ -207,7 +217,9 @@ export default async function Dashboard() {
           <div className="text-[24px] font-bold text-slate-900 leading-none tracking-[-0.02em] mb-2">
             {streak} {streak === 1 ? "day" : "days"}
           </div>
-          <DeltaUp text={streak > 0 ? `${streak} day streak` : "Start today"} />
+          <Link href="/catalog" className="no-underline">
+            <DeltaUp text={streak > 0 ? `${streak} day streak` : "Start today"} />
+          </Link>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-lg p-5">
@@ -215,7 +227,9 @@ export default async function Dashboard() {
           <div className="text-[24px] font-bold text-slate-900 leading-none tracking-[-0.02em] mb-2">
             {points.toLocaleString()}
           </div>
-          <DeltaUp text="Keep earning" />
+          <Link href={continueLearningHref} className="no-underline">
+            <DeltaUp text="Keep earning" />
+          </Link>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-lg p-5">
@@ -223,9 +237,12 @@ export default async function Dashboard() {
           <div className="text-[24px] font-bold text-slate-900 leading-none tracking-[-0.02em] mb-2">
             {doneChapters} / {totalChapters}
           </div>
-          <div className="text-[12px] font-medium text-slate-500">
-            {totalChapters > 0 ? Math.round((doneChapters / totalChapters) * 100) : 0}% complete
-          </div>
+          <Link
+            href="/quest/use-and-interpret-views"
+            className="text-[12px] font-medium text-slate-500 hover:text-slate-700 hover:underline"
+          >
+            {completePct}% complete
+          </Link>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-lg p-5">
@@ -233,7 +250,9 @@ export default async function Dashboard() {
           <div className="text-[20px] font-bold text-slate-900 leading-none tracking-[-0.01em] mb-2 mt-[3px]">
             {rank}
           </div>
-          <DeltaUp text="Keep learning" />
+          <Link href={continueLearningHref} className="no-underline">
+            <DeltaUp text="Keep learning" />
+          </Link>
         </div>
       </div>
 
@@ -324,50 +343,44 @@ export default async function Dashboard() {
       )}
 
       {/* ── Recent activity ── */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <div className="text-[18px] font-semibold text-slate-900">Recent activity</div>
-        </div>
-        <div className="flex flex-col">
-          {progressRows.length === 0 ? (
-            <div className="py-3 text-sm text-slate-500">No activity yet. Start a module to track your progress.</div>
-          ) : (
-            progressRows
-              .filter((p) => p.status === "completed" || p.status === "in_progress")
-              .slice(0, 5)
-              .map((p, i) => {
-                const chapter = quests
-                  .flatMap((q) => q.chapters)
-                  .find((c) => c.id === p.chapterId);
-                if (!chapter) return null;
-                return (
+      {activityRows.length > 0 && (
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-[18px] font-semibold text-slate-900">Recent activity</div>
+          </div>
+          <div className="flex flex-col">
+            {activityRows.map((p, i) => {
+              const chapter = allChapters.find((c) => c.id === p.chapterId);
+              if (!chapter) return null;
+              return (
+                <Link
+                  key={p.id}
+                  href={`/quest/${chapter.questSlug}/${chapter.slug}`}
+                  className="flex items-center gap-3 py-3 hover:bg-slate-50 -mx-2 px-2 rounded transition-colors"
+                  style={{ borderBottom: i < activityRows.length - 1 ? "1px solid #F1F5F9" : "none" }}
+                >
                   <div
-                    key={p.id}
-                    className="flex items-center gap-3 py-3"
-                    style={{ borderBottom: i < 4 ? "1px solid #F1F5F9" : "none" }}
-                  >
-                    <div
-                      className="w-2 h-2 rounded-full shrink-0"
-                      style={{ background: p.status === "completed" ? "#047857" : "#B45309" }}
-                    />
-                    <div className="flex-1 text-sm text-slate-900 leading-[1.45]">
-                      {p.status === "completed" ? "Completed: " : "In progress: "}
-                      <strong>{chapter.title_en}</strong>
-                    </div>
-                    <div className="text-[12px] text-slate-500 whitespace-nowrap">
-                      {p.completedAt
-                        ? new Intl.RelativeTimeFormat("en", { numeric: "auto" }).format(
-                            Math.round((p.completedAt.getTime() - Date.now()) / 3600000),
-                            "hour"
-                          )
-                        : "Recently"}
-                    </div>
+                    className="w-2 h-2 rounded-full shrink-0"
+                    style={{ background: p.status === "completed" ? "#047857" : "#B45309" }}
+                  />
+                  <div className="flex-1 text-sm text-slate-900 leading-[1.45]">
+                    {p.status === "completed" ? "Completed: " : "In progress: "}
+                    <strong>{chapter.title_en}</strong>
                   </div>
-                );
-              })
-          )}
+                  <div className="text-[12px] text-slate-500 whitespace-nowrap">
+                    {p.completedAt
+                      ? new Intl.RelativeTimeFormat("en", { numeric: "auto" }).format(
+                          Math.round((p.completedAt.getTime() - Date.now()) / 3600000),
+                          "hour"
+                        )
+                      : "Recently"}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
     </div>
   );
