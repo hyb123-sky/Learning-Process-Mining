@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { CURRENT_USER_ID } from "@/lib/constants";
+import { getCurrentUserId } from "@/lib/auth/role";
 import { CrestBadge } from "@/components/shared/CrestBadge";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,8 +19,9 @@ export default async function QuestDetail({ params }: { params: { slug: string }
   });
   if (!quest) return notFound();
 
+  const userId = await getCurrentUserId();
   const progress = await prisma.chapterProgress.findMany({
-    where: { userId: CURRENT_USER_ID, chapterId: { in: quest.chapters.map((c) => c.id) } },
+    where: { userId, chapterId: { in: quest.chapters.map((c) => c.id) } },
   });
   const progMap = new Map(progress.map((p) => [p.chapterId, p]));
 

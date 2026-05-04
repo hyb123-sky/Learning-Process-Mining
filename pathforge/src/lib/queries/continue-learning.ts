@@ -1,9 +1,10 @@
 import { prisma } from '@/lib/prisma';
-import { CURRENT_USER_ID } from '@/lib/constants';
+import { getCurrentUserId } from '@/lib/auth/role';
 
 export async function getContinueLearningHref(): Promise<string> {
+  const userId = await getCurrentUserId();
   const inProgress = await prisma.chapterProgress.findFirst({
-    where: { userId: CURRENT_USER_ID, status: 'in_progress' },
+    where: { userId, status: 'in_progress' },
     orderBy: { updatedAt: 'desc' },
     include: { chapter: { include: { quest: true } } },
   });
@@ -11,7 +12,7 @@ export async function getContinueLearningHref(): Promise<string> {
     return `/quest/${inProgress.chapter.quest.slug}/${inProgress.chapter.slug}`;
   }
   const available = await prisma.chapterProgress.findFirst({
-    where: { userId: CURRENT_USER_ID, status: 'available' },
+    where: { userId, status: 'available' },
     orderBy: { chapter: { order: 'asc' } },
     include: { chapter: { include: { quest: true } } },
   });

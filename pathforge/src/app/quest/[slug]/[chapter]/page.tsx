@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { CURRENT_USER_ID } from "@/lib/constants";
+import { getCurrentUserId } from "@/lib/auth/role";
 import { ChapterContent } from "@/components/quest/ChapterContent";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -21,13 +21,14 @@ export default async function ChapterReader({
   const chapter = quest.chapters.find((c) => c.slug === params.chapter);
   if (!chapter) return notFound();
 
+  const userId = await getCurrentUserId();
   // Mark in_progress on read if currently available
   const prog = await prisma.chapterProgress.findUnique({
-    where: { userId_chapterId: { userId: CURRENT_USER_ID, chapterId: chapter.id } },
+    where: { userId_chapterId: { userId, chapterId: chapter.id } },
   });
   if (!prog) {
     await prisma.chapterProgress.create({
-      data: { userId: CURRENT_USER_ID, chapterId: chapter.id, status: "in_progress" },
+      data: { userId, chapterId: chapter.id, status: "in_progress" },
     });
   } else if (prog.status === "available") {
     await prisma.chapterProgress.update({

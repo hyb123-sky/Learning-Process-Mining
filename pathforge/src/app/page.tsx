@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { CURRENT_USER_ID } from "@/lib/constants";
+import { getCurrentUserId } from "@/lib/auth/role";
 import { ensureUserStats } from "@/actions/progress";
 import { getContinueLearningHref } from "@/lib/queries/continue-learning";
 
@@ -108,14 +108,15 @@ function ModuleCard({
 
 export default async function Dashboard() {
   await ensureUserStats();
+  const userId = await getCurrentUserId();
 
   const [stats, quests, progressRows, continueLearningHref] = await Promise.all([
-    prisma.userStats.findUnique({ where: { userId: CURRENT_USER_ID } }),
+    prisma.userStats.findUnique({ where: { userId } }),
     prisma.quest.findMany({
       orderBy: { order: "asc" },
       include: { chapters: { orderBy: { order: "asc" } } },
     }),
-    prisma.chapterProgress.findMany({ where: { userId: CURRENT_USER_ID } }),
+    prisma.chapterProgress.findMany({ where: { userId } }),
     getContinueLearningHref(),
   ]);
 

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { CURRENT_USER_ID } from "@/lib/constants";
+import { getCurrentUserId } from "@/lib/auth/role";
 import { ensureUserStats } from "@/actions/progress";
 import { calculateRank, nextRank, rankProgressPct } from "@/lib/gamification";
 import { ProgressRing } from "@/components/shared/ProgressRing";
@@ -11,10 +11,11 @@ export const dynamic = "force-dynamic";
 
 export default async function ProfilePage() {
   await ensureUserStats();
+  const userId = await getCurrentUserId();
   const [stats, completedProgress] = await Promise.all([
-    prisma.userStats.findUnique({ where: { userId: CURRENT_USER_ID } }),
+    prisma.userStats.findUnique({ where: { userId } }),
     prisma.chapterProgress.findMany({
-      where: { userId: CURRENT_USER_ID, status: "completed" },
+      where: { userId, status: "completed" },
       include: { chapter: true },
       orderBy: { completedAt: "asc" },
     }),

@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { CURRENT_USER_ID } from '@/lib/constants';
+import { getCurrentUserId } from '@/lib/auth/role';
 
 export type CatalogTrail = {
   id: string;
@@ -28,6 +28,7 @@ export async function getCatalog(opts: {
   q?: string;
   trailSlug?: string;
 }): Promise<CatalogTrail[]> {
+  const userId = await getCurrentUserId();
   const trails = await prisma.trail.findMany({
     where: opts.trailSlug ? { slug: opts.trailSlug } : undefined,
     orderBy: { order: 'asc' },
@@ -38,7 +39,7 @@ export async function getCatalog(opts: {
           chapters: {
             include: {
               _count: { select: { questions: true } },
-              progress: { where: { userId: CURRENT_USER_ID } },
+              progress: { where: { userId } },
             },
           },
         },

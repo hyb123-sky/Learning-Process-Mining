@@ -1,13 +1,14 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { CURRENT_USER_ID } from "@/lib/constants";
+import { getCurrentUserId } from "@/lib/auth/role";
 import { SubmitTrialInput } from "@/lib/validation/trial";
 import { gradeAnswers, insightBonus } from "@/lib/gamification";
 import { revalidatePath } from "next/cache";
 
 export async function submitTrial(input: unknown) {
   const parsed = SubmitTrialInput.parse(input);
+  const userId = await getCurrentUserId();
 
   const chapter = await prisma.chapter.findUnique({
     where: { id: parsed.chapterId },
@@ -22,16 +23,16 @@ export async function submitTrial(input: unknown) {
   );
 
   const existing = await prisma.chapterProgress.findUnique({
-    where: { userId_chapterId: { userId: CURRENT_USER_ID, chapterId: parsed.chapterId } },
+    where: { userId_chapterId: { userId, chapterId: parsed.chapterId } },
   });
 
   const nextBest = Math.max(existing?.bestScore ?? 0, score);
   const firstCompletion = !existing?.completedAt && passed;
 
   await prisma.chapterProgress.upsert({
-    where: { userId_chapterId: { userId: CURRENT_USER_ID, chapterId: parsed.chapterId } },
+    where: { userId_chapterId: { userId, chapterId: parsed.chapterId } },
     create: {
-      userId: CURRENT_USER_ID,
+      userId,
       chapterId: parsed.chapterId,
       status: passed ? "completed" : "in_progress",
       bestScore: score,
@@ -53,11 +54,11 @@ export async function submitTrial(input: unknown) {
     });
     if (next) {
       const nextProg = await prisma.chapterProgress.findUnique({
-        where: { userId_chapterId: { userId: CURRENT_USER_ID, chapterId: next.id } },
+        where: { userId_chapterId: { userId, chapterId: next.id } },
       });
       if (!nextProg) {
         await prisma.chapterProgress.create({
-          data: { userId: CURRENT_USER_ID, chapterId: next.id, status: "available" },
+          data: { userId, chapterId: next.id, status: "available" },
         });
       } else if (nextProg.status === "locked") {
         await prisma.chapterProgress.update({
@@ -75,9 +76,9 @@ export async function submitTrial(input: unknown) {
     insightAwarded = Math.round(chapter.insightReward * (1 + bonus));
     const today = new Date().toISOString().slice(0, 10);
     await prisma.userStats.upsert({
-      where: { userId: CURRENT_USER_ID },
+      where: { userId },
       create: {
-        userId: CURRENT_USER_ID,
+        userId,
         totalInsight: insightAwarded,
         lastStudyDate: today,
         currentStreak: 1,
