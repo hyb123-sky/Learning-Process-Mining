@@ -22,10 +22,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </p>
         </div>
         <nav className="space-y-1">
-          <AdminNavLink href="/admin" icon={LayoutDashboard} label="Dashboard" />
-          <AdminNavLink href="/admin/trails" icon={Map} label="Trails" />
-          <AdminNavLink href="/admin/quests" icon={BookOpen} label="Quests" />
-          <AdminNavLink href="/admin/chapters" icon={FileQuestion} label="Chapters" />
+          <AdminNavLink href="/admin" icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" />
+          <AdminNavLink href="/admin/trails" icon={<Map className="h-4 w-4" />} label="Trails" />
+          <AdminNavLink href="/admin/quests" icon={<BookOpen className="h-4 w-4" />} label="Quests" />
+          <AdminNavLink href="/admin/chapters" icon={<FileQuestion className="h-4 w-4" />} label="Chapters" />
         </nav>
         <div className="mt-8 border-t pt-4">
           <Link
