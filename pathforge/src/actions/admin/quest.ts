@@ -48,11 +48,12 @@ export async function upsertQuest(_prev: QuestFormState, formData: FormData): Pr
     } else {
       await prisma.quest.create({ data });
     }
-  } catch (e: any) {
-    if (e.code === 'P2002') {
+  } catch (e) {
+    const err = e as { code?: string; message?: string };
+    if (err.code === 'P2002') {
       return { ok: false, message: 'Slug already exists', errors: { slug: ['Already in use'] } };
     }
-    return { ok: false, message: e.message ?? 'Database error' };
+    return { ok: false, message: err.message ?? 'Database error' };
   }
 
   revalidatePath('/admin/quests');

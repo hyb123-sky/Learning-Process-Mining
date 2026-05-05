@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
-import { BookOpen, FileQuestion, Map, Users } from 'lucide-react';
+import { BookOpen, FileQuestion, Map, Users, type LucideIcon } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,7 +40,7 @@ export default async function AdminDashboard() {
   );
 }
 
-function StatCard({ label, value, icon: Icon, href }: { label: string; value: number; icon: any; href: string }) {
+function StatCard({ label, value, icon: Icon, href }: { label: string; value: number; icon: LucideIcon; href: string }) {
   return (
     <Link
       href={href}

@@ -106,7 +106,7 @@ export function QuestForm({ quest, trails }: { quest?: Quest; trails: Trail[] })
   );
 }
 
-function Field({ name, label, defaultValue, hint, errors, type = 'text' }: any) {
+function Field({ name, label, defaultValue, hint, errors, type = 'text' }: { name: string; label: string; defaultValue: string; hint?: string; errors?: string[]; type?: string }) {
   return (
     <div>
       <label htmlFor={name} className="block text-sm font-medium mb-1.5">
@@ -120,12 +120,12 @@ function Field({ name, label, defaultValue, hint, errors, type = 'text' }: any) 
         className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
       />
       {hint && <p className="text-xs text-muted-foreground mt-1">{hint}</p>}
-      {errors?.length > 0 && <p className="text-xs text-destructive mt-1">{errors[0]}</p>}
+      {errors && errors.length > 0 && <p className="text-xs text-destructive mt-1">{errors[0]}</p>}
     </div>
   );
 }
 
-function TextareaField({ name, label, defaultValue, errors, rows = 3 }: any) {
+function TextareaField({ name, label, defaultValue, errors, rows = 3 }: { name: string; label: string; defaultValue: string; errors?: string[]; rows?: number }) {
   return (
     <div>
       <label htmlFor={name} className="block text-sm font-medium mb-1.5">
@@ -138,12 +138,12 @@ function TextareaField({ name, label, defaultValue, errors, rows = 3 }: any) {
         defaultValue={defaultValue}
         className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-y"
       />
-      {errors?.length > 0 && <p className="text-xs text-destructive mt-1">{errors[0]}</p>}
+      {errors && errors.length > 0 && <p className="text-xs text-destructive mt-1">{errors[0]}</p>}
     </div>
   );
 }
 
-function SelectField({ name, label, defaultValue, options, errors }: any) {
+function SelectField({ name, label, defaultValue, options, errors }: { name: string; label: string; defaultValue: string; options: { value: string; label: string }[]; errors?: string[] }) {
   return (
     <div>
       <label htmlFor={name} className="block text-sm font-medium mb-1.5">
@@ -155,13 +155,13 @@ function SelectField({ name, label, defaultValue, options, errors }: any) {
         defaultValue={defaultValue}
         className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
       >
-        {options.map((o: any) => (
+        {options.map((o) => (
           <option key={o.value} value={o.value}>
             {o.label}
           </option>
         ))}
       </select>
-      {errors?.length > 0 && <p className="text-xs text-destructive mt-1">{errors[0]}</p>}
+      {errors && errors.length > 0 && <p className="text-xs text-destructive mt-1">{errors[0]}</p>}
     </div>
   );
 }
