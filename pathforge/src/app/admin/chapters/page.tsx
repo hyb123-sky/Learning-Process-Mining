@@ -1,5 +1,9 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { Plus } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { DeleteChapterButton } from "@/components/admin/DeleteChapterButton";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +14,13 @@ export default async function AdminChaptersList() {
   });
   return (
     <div>
-      <p className="eyebrow mb-1">Chapters</p>
+      <div className="flex items-center justify-between mb-1">
+        <p className="eyebrow">Chapters</p>
+        <Link href="/admin/chapters/new" className={cn(buttonVariants(), 'inline-flex items-center gap-2')}>
+          <Plus className="h-4 w-4" />
+          New chapter
+        </Link>
+      </div>
       <h1 className="font-display text-3xl text-pf-navy">章の管理</h1>
       <div className="mt-6 overflow-hidden rounded-md border border-border">
         <table className="w-full text-sm">
@@ -33,12 +43,15 @@ export default async function AdminChaptersList() {
                 <td className="px-3 py-2 font-mono">{c.insightReward}</td>
                 <td className="px-3 py-2 font-mono">{c.questions.length}</td>
                 <td className="px-3 py-2 text-right">
-                  <Link
-                    className="text-[11px] font-semibold uppercase tracking-widest text-pf-gold-muted hover:text-pf-navy"
-                    href={`/admin/chapters/${c.id}/edit`}
-                  >
-                    Edit →
-                  </Link>
+                  <div className="inline-flex items-center gap-2">
+                    <Link
+                      className="text-[11px] font-semibold uppercase tracking-widest text-pf-gold-muted hover:text-pf-navy"
+                      href={`/admin/chapters/${c.id}/edit`}
+                    >
+                      Edit →
+                    </Link>
+                    <DeleteChapterButton id={c.id} />
+                  </div>
                 </td>
               </tr>
             ))}

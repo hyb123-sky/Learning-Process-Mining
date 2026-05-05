@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import {
   ChapterUpsertInput,
   QuestionUpsertInput,
@@ -20,14 +21,20 @@ export async function upsertQuest(input: unknown) {
 
 export async function upsertChapter(input: unknown) {
   const data = ChapterUpsertInput.parse(input);
+  const isCreate = !data.id;
   const row = data.id
     ? await prisma.chapter.update({ where: { id: data.id }, data })
     : await prisma.chapter.create({ data });
   revalidatePath("/admin/chapters");
+  revalidatePath("/admin");
+  revalidatePath("/catalog");
   const q = await prisma.quest.findUnique({ where: { id: row.questId } });
   if (q) {
     revalidatePath(`/quest/${q.slug}`);
     revalidatePath(`/quest/${q.slug}/${row.slug}`);
+  }
+  if (isCreate) {
+    redirect(`/admin/chapters/${row.id}/edit`);
   }
   return row;
 }
