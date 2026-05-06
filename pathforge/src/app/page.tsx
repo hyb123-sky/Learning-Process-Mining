@@ -110,7 +110,7 @@ export default async function Dashboard() {
   await ensureUserStats();
   const userId = await getCurrentUserId();
 
-  const [stats, quests, progressRows, continueLearningHref] = await Promise.all([
+  const [stats, quests, progressRows, continueLearningHref, featuredQuest] = await Promise.all([
     prisma.userStats.findUnique({ where: { userId } }),
     prisma.quest.findMany({
       orderBy: { order: "asc" },
@@ -118,7 +118,12 @@ export default async function Dashboard() {
     }),
     prisma.chapterProgress.findMany({ where: { userId } }),
     getContinueLearningHref(),
+    prisma.quest.findFirst({
+      orderBy: [{ trail: { order: "asc" } }, { order: "asc" }],
+      select: { slug: true },
+    }),
   ]);
+  const featuredQuestHref = featuredQuest ? `/quest/${featuredQuest.slug}` : "/catalog";
 
   const progMap = new Map(progressRows.map((p) => [p.chapterId, p]));
 
@@ -239,7 +244,7 @@ export default async function Dashboard() {
             {doneChapters} / {totalChapters}
           </div>
           <Link
-            href="/quest/use-and-interpret-views"
+            href={featuredQuestHref}
             className="text-[12px] font-medium text-slate-500 hover:text-slate-700 hover:underline"
           >
             {completePct}% complete
