@@ -1,0 +1,27 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" fill="none">
+  <defs>
+    <linearGradient id="goldG3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F5E6B8"></stop>
+      <stop offset="1" stop-color="#A87D28"></stop>
+    </linearGradient>
+  </defs>
+  
+  <path d="M60 8 L106 34 L106 86 L60 112 L14 86 L14 34 Z" fill="url(#goldG3)" stroke="#7E5C18" stroke-width="1.5"></path>
+  <path d="M60 18 L97 40 L97 80 L60 102 L23 80 L23 40 Z" fill="#1E2E4F"></path>
+  
+  <g stroke="#C79A3A" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M44 42 L76 42 Q76 64 60 72 Q44 64 44 42 Z" fill="#3C5278"></path>
+    <line x1="60" y1="72" x2="60" y2="84"></line>
+    <line x1="50" y1="84" x2="70" y2="84"></line>
+    
+    <circle cx="60" cy="54" r="3" fill="#F5E6B8" stroke="none"></circle>
+    <circle cx="52" cy="50" r="1.2" fill="#F5E6B8" stroke="none"></circle>
+    <circle cx="68" cy="56" r="1.2" fill="#F5E6B8" stroke="none"></circle>
+  </g>
+  
+  <g transform="translate(0, 96)">
+    <path d="M18 0 L102 0 L96 16 L24 16 Z" fill="#4F7A46"></path>
+    <path d="M18 0 L14 8 L18 6 Z M102 0 L106 8 L102 6 Z" fill="#355230"></path>
+  </g>
+</svg>

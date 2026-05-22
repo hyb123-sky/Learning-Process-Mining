@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 52" fill="none">
+  <g transform="translate(0, 4)">
+    <path d="M22 0 L44 4 L44 22 Q44 36 22 44 Q0 36 0 22 L0 4 Z" fill="#1E2E4F" stroke="#C79A3A" stroke-width="1.5"></path>
+    <path d="M22 10 L22 34 M22 10 L16 18 M22 10 L28 18 M22 22 L14 28 M22 22 L30 28" stroke="#C79A3A" stroke-width="1.75" stroke-linecap="round"></path>
+    <circle cx="22" cy="10" r="2.2" fill="#F5E6B8"></circle>
+  </g>
+  <g font-family="Cormorant Garamond, Georgia, serif" fill="#0F1A33">
+    <text x="56" y="34" font-size="30" font-weight="600" letter-spacing="0.01em">PathForge</text>
+  </g>
+</svg>
