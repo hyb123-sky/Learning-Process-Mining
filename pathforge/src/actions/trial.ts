@@ -5,6 +5,7 @@ import { getCurrentUserId } from "@/lib/auth/role";
 import { SubmitTrialInput } from "@/lib/validation/trial";
 import { gradeAnswers, insightBonus } from "@/lib/gamification";
 import { revalidatePath } from "next/cache";
+import { computeStreakUpdate } from "@/lib/streak";
 
 export async function submitTrial(input: unknown) {
   const parsed = SubmitTrialInput.parse(input);
@@ -74,19 +75,37 @@ export async function submitTrial(input: unknown) {
   if (firstCompletion) {
     const bonus = insightBonus(score);
     insightAwarded = Math.round(chapter.insightReward * (1 + bonus));
-    const today = new Date().toISOString().slice(0, 10);
+    const existingStats = await prisma.userStats.findUnique({
+      where: { userId },
+    });
+    const today = new Date();
+    const streakUpdate = existingStats
+      ? computeStreakUpdate(
+          existingStats.lastStudyDate ? new Date(existingStats.lastStudyDate) : null,
+          existingStats.currentStreak,
+          existingStats.longestStreak,
+          today
+        )
+      : null;
+
     await prisma.userStats.upsert({
       where: { userId },
       create: {
         userId,
         totalInsight: insightAwarded,
-        lastStudyDate: today,
+        lastStudyDate: today.toISOString().slice(0, 10),
         currentStreak: 1,
         longestStreak: 1,
       },
       update: {
         totalInsight: { increment: insightAwarded },
-        lastStudyDate: today,
+        lastStudyDate: today.toISOString().slice(0, 10),
+        ...(streakUpdate
+          ? {
+              currentStreak: streakUpdate.currentStreak,
+              longestStreak: streakUpdate.longestStreak,
+            }
+          : {}),
       },
     });
   }
